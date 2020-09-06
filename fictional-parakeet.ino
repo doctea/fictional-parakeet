@@ -41,6 +41,8 @@
 
 ResponsiveAnalogRead analogOne(A0, true);
 ResponsiveAnalogRead analogTwo(A1, true);
+ResponsiveAnalogRead analogThree(A2, true);
+
 
 /// The band that will be tuned by this sketch is FM.
 #define FIX_BAND RADIO_BAND_FM
@@ -77,6 +79,7 @@ void setup() {
 
   analogOne.setSnapMultiplier(0.9f);  // 0.1 easing default
   analogTwo.setSnapMultiplier(0.9f);  // 0.1 easing default
+  analogThree.setSnapMultiplier(0.9f);  // 0.1 easing default
 } // setup
 
 
@@ -143,6 +146,8 @@ int readFrequency() {
 
   analogOne.update();
   analogTwo.update();
+  analogThree.update();
+
   
     // read the input on analog pin 0:
   int sensorValue1 = analogOne.getValue(); //Read(A0);
@@ -158,6 +163,9 @@ int readFrequency() {
   // print out the value you read:
   //Serial.println(voltage);
 
+  int sensorValue3 = analogThree.getValue();
+  float voltage3 = sensorValue3 * (1.0/ 1023.0);
+
   /* whoa this gives nuts modulation bleeps !! */
   /*int freq = 4000 + 
         (((sensorValue1/1023.0) * 8000.0)/2) +
@@ -169,11 +177,12 @@ int readFrequency() {
 
 #define sv1 voltage1 //(sensorValue1/1023.0)
 #define sv2 voltage2 //(sensorValue2/1023.0)
+#define sv3 voltage3
        
   //int freq = constrain(((MAX_FREQ) * sv1) + ((MAX_FREQ) * sv2),0,MAX_FREQ);
   float v = ((sv1*10.0) + sv2)/11.0;
-
-  int freq = v * MAX_FREQ;
+  
+  int freq = v * (MAX_FREQ) + ( MAX_FREQ * sv3);
 
   //Serial.println(freq);
   
